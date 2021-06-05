@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import firebase from "firebase/app";
+import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { Auth } from "../pages/auth";
 import { Home } from "../pages/home";
 
-export const Router = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+interface IRouterProps {
+  isLoggedIn: firebase.User | null;
+}
+
+export const Router: React.FC<IRouterProps> = ({ isLoggedIn }) => {
   return (
     <BrowserRouter>
       <Switch>
