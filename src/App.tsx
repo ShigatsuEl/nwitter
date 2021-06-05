@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Router } from "./routers/router";
-import { authService } from "./firebase";
+import { authService } from "./fb";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(authService.currentUser);
