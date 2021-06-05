@@ -1,10 +1,17 @@
+// import { dbService } from "fb";
+import { dbService } from "fb";
 import React, { useState } from "react";
 
 export const Home = () => {
   const [nweet, setNweet] = useState("");
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    await dbService.collection("nweets").add({
+      nweet,
+      createdAt: Date.now(),
+    });
+    setNweet("");
   };
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
