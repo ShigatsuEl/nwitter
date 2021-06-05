@@ -1,11 +1,10 @@
-import firebase from "firebase/app";
 import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { Auth } from "../pages/auth";
 import { Home } from "../pages/home";
 
 interface IRouterProps {
-  isLoggedIn: firebase.User | null;
+  isLoggedIn: boolean;
 }
 
 export const Router: React.FC<IRouterProps> = ({ isLoggedIn }) => {
