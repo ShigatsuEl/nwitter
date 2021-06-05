@@ -1,4 +1,4 @@
-import { authService } from "fb";
+import { authService, firebaseInstance } from "fb";
 import React, { useState } from "react";
 
 export const Auth = () => {
@@ -40,6 +40,24 @@ export const Auth = () => {
     setIsCreateAccount((current) => !current);
   };
 
+  const onSocialClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    try {
+      const target = event.target as HTMLButtonElement;
+      let provider:
+        | firebase.default.auth.GoogleAuthProvider
+        | firebase.default.auth.GithubAuthProvider;
+      if (target.name === "google") {
+        provider = new firebaseInstance.auth.GoogleAuthProvider();
+      } else if (target.name === "github") {
+        provider = new firebaseInstance.auth.GithubAuthProvider();
+      }
+      const data = await authService.signInWithPopup(provider!);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       <form onSubmit={onSubmit}>
@@ -74,8 +92,12 @@ export const Auth = () => {
           : "Don’t have an account? Create account"}
       </h6>
       <div>
-        <button>Continue with Google</button>
-        <button>Continue with Github</button>
+        <button name="google" onClick={onSocialClick}>
+          Continue with Google
+        </button>
+        <button name="github" onClick={onSocialClick}>
+          Continue with Github
+        </button>
       </div>
     </div>
   );
