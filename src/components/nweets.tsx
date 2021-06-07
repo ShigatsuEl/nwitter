@@ -42,17 +42,21 @@ export const Nweets: React.FC<INweetsProps> = ({ nweet, user }) => {
     <div>
       {isEditing ? (
         <React.Fragment>
-          <form onSubmit={onSubmit}>
-            <input
-              type="text"
-              value={newNweetText}
-              placeholder="Edit your Nweet"
-              required
-              onChange={onChange}
-            />
-            <button>Update</button>
-          </form>
-          <button onClick={toggleEditing}>Cancel</button>
+          {user?.uid === nweet.creatorId && (
+            <React.Fragment>
+              <form onSubmit={onSubmit}>
+                <input
+                  type="text"
+                  value={newNweetText}
+                  placeholder="Edit your Nweet"
+                  required
+                  onChange={onChange}
+                />
+                <button>Update</button>
+              </form>
+              <button onClick={toggleEditing}>Cancel</button>
+            </React.Fragment>
+          )}
         </React.Fragment>
       ) : (
         <React.Fragment>
