@@ -13,29 +13,35 @@ export interface INweet {
   createdAt?: Date;
   creatorId?: string;
   text?: string;
+  fileUrl?: string;
 }
 
 export const Home: React.FC<IHomeProps> = ({ user }) => {
   const [nweet, setNweet] = useState("");
   const [nweets, setNweets] = useState<INweet[]>([]);
-  const [attachment, setAttachment] = useState<string | null>("");
+  const [file, setFile] = useState<string | null>(null);
   const inputFileRef = useRef<HTMLInputElement>(null);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (attachment !== null && attachment !== "") {
+    let fileUrl = null;
+    if (file !== null) {
       const fileRef = storeService.ref().child(`${user?.uid}/${uuidv4()}`);
-      const response = await fileRef.putString(attachment, "data_url");
-      console.log(response);
+      const response = await fileRef.putString(file, "data_url");
+      fileUrl = await response.ref.getDownloadURL();
     }
-    /* if (nweet !== "") {
-      await dbService.collection("nweets").add({
-        text: nweet,
-        createdAt: Date.now(),
-        creatorId: user!.uid,
-      });
+    const nweetObj = {
+      text: nweet,
+      createdAt: Date.now(),
+      creatorId: user!.uid,
+      fileUrl,
+    };
+
+    if (nweetObj.text !== "" || nweetObj.fileUrl !== null) {
+      await dbService.collection("nweets").add(nweetObj);
+      setNweet("");
+      setFile("");
     }
-    setNweet(""); */
   };
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,15 +63,17 @@ export const Home: React.FC<IHomeProps> = ({ user }) => {
     }
     const reader = new FileReader();
     reader.onloadend = () => {
-      setAttachment(reader.result as string | null);
+      setFile(reader.result as string | null);
     };
     if (changeFile) {
       reader.readAsDataURL(changeFile);
+    } else {
+      setFile(null);
     }
   };
 
-  const onClearAttachment = () => {
-    setAttachment(null);
+  const onClearFile = () => {
+    setFile(null);
     if (inputFileRef.current) {
       inputFileRef.current.value = "";
     }
@@ -98,10 +106,10 @@ export const Home: React.FC<IHomeProps> = ({ user }) => {
           onChange={onFileChange}
         />
         <input type="submit" value="Nweet" onChange={onChange} />
-        {attachment && (
+        {file && (
           <div>
-            <img src={attachment} alt={attachment} width="50px" height="50px" />
-            <button onClick={onClearAttachment}>Clear</button>
+            <img src={file} alt={file} width="50px" height="50px" />
+            <button onClick={onClearFile}>Clear</button>
           </div>
         )}
       </form>

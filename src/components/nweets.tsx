@@ -67,6 +67,9 @@ export const Nweets: React.FC<INweetsProps> = ({ nweet, user }) => {
               <button onClick={onDeleteClick}>Delete</button>
             </React.Fragment>
           )}
+          {nweet.fileUrl && (
+            <img src={nweet.fileUrl} alt={nweet.id} width="50" height="50" />
+          )}
         </React.Fragment>
       )}
     </div>
