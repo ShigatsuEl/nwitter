@@ -8,7 +8,7 @@ interface IHomeProps {
   user: firebase.User | null;
 }
 
-export interface INweets {
+export interface INweet {
   id: string;
   createdAt?: Date;
   creatorId?: string;
@@ -17,7 +17,7 @@ export interface INweets {
 
 export const Home: React.FC<IHomeProps> = ({ user }) => {
   const [nweet, setNweet] = useState("");
-  const [nweets, setNweets] = useState<INweets[]>([]);
+  const [nweets, setNweets] = useState<INweet[]>([]);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -58,7 +58,11 @@ export const Home: React.FC<IHomeProps> = ({ user }) => {
         />
         <input type="submit" value="Nweet" onChange={onChange} />
       </form>
-      <Nweets nweets={nweets} user={user} />
+      <div>
+        {nweets.map((nweet) => (
+          <Nweets key={nweet.id} nweet={nweet} user={user} />
+        ))}
+      </div>
     </div>
   );
 };
