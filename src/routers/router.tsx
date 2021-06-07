@@ -14,7 +14,7 @@ interface IRouterProps {
 export const Router: React.FC<IRouterProps> = ({ isLoggedIn, user }) => {
   return (
     <BrowserRouter>
-      {isLoggedIn && <Navigation />}
+      {isLoggedIn && <Navigation user={user} />}
       <Switch>
         {isLoggedIn ? (
           <React.Fragment>
