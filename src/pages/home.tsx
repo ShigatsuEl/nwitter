@@ -1,7 +1,7 @@
-// import { dbService } from "fb";
+import { dbService, storeService } from "fb";
 import firebase from "firebase";
-import { dbService } from "fb";
 import React, { useEffect, useRef, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import { Nweets } from "components/nweets";
 
 interface IHomeProps {
@@ -23,14 +23,19 @@ export const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (nweet !== "") {
+    if (attachment !== null && attachment !== "") {
+      const fileRef = storeService.ref().child(`${user?.uid}/${uuidv4()}`);
+      const response = await fileRef.putString(attachment, "data_url");
+      console.log(response);
+    }
+    /* if (nweet !== "") {
       await dbService.collection("nweets").add({
         text: nweet,
         createdAt: Date.now(),
         creatorId: user!.uid,
       });
     }
-    setNweet("");
+    setNweet(""); */
   };
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,12 +49,19 @@ export const Home: React.FC<IHomeProps> = ({ user }) => {
     const {
       target: { files },
     } = event;
-    const changeFile = files![0];
+    let changeFile;
+    if (files) {
+      changeFile = files[0];
+    } else {
+      changeFile = null;
+    }
     const reader = new FileReader();
     reader.onloadend = () => {
-      setAttachment(reader.result as string);
+      setAttachment(reader.result as string | null);
     };
-    reader.readAsDataURL(changeFile);
+    if (changeFile) {
+      reader.readAsDataURL(changeFile);
+    }
   };
 
   const onClearAttachment = () => {
