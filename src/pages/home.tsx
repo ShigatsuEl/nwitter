@@ -36,6 +36,16 @@ export const Home: React.FC<IHomeProps> = ({ user }) => {
     setNweet(value);
   };
 
+  const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { files },
+    } = event;
+    const changeFile = files![0];
+    const reader = new FileReader();
+    reader.onload = (event: ProgressEvent<FileReader>) => console.log(event);
+    reader.readAsDataURL(changeFile);
+  };
+
   useEffect(() => {
     dbService.collection("nweets").onSnapshot((snapshot) => {
       const nweetArray = snapshot.docs.map((doc) => ({
@@ -56,6 +66,7 @@ export const Home: React.FC<IHomeProps> = ({ user }) => {
           maxLength={120}
           onChange={onChange}
         />
+        <input type="file" accept="image/*" onChange={onFileChange} />
         <input type="submit" value="Nweet" onChange={onChange} />
       </form>
       <div>
