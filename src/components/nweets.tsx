@@ -1,4 +1,4 @@
-import { dbService } from "fb";
+import { dbService, storeService } from "fb";
 import firebase from "firebase";
 import React, { useState } from "react";
 import { INweet } from "../pages/home";
@@ -16,6 +16,7 @@ export const Nweets: React.FC<INweetsProps> = ({ nweet, user }) => {
     const ok = window.confirm("Are you sure want to delete this nweet?");
     if (ok) {
       await dbService.doc(`nweets/${nweet.id}`).delete();
+      await storeService.refFromURL(nweet.fileUrl!).delete();
     }
   };
 
