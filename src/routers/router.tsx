@@ -22,7 +22,7 @@ export const Router: React.FC<IRouterProps> = ({ isLoggedIn, user }) => {
               <Home user={user} />
             </Route>
             <Route exact path="/profile">
-              <Profile />
+              <Profile user={user} />
             </Route>
           </React.Fragment>
         ) : (
