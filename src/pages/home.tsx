@@ -2,16 +2,22 @@
 import firebase from "firebase";
 import { dbService } from "fb";
 import React, { useEffect, useState } from "react";
+import { Nweets } from "components/nweets";
 
 interface IHomeProps {
   user: firebase.User | null;
 }
 
+export interface INweets {
+  id: string;
+  createdAt?: Date;
+  creatorId?: string;
+  text?: string;
+}
+
 export const Home: React.FC<IHomeProps> = ({ user }) => {
   const [nweet, setNweet] = useState("");
-  const [nweets, setNweets] = useState<
-    { id: string; createdAt?: Date; creatorId?: string; text?: string }[]
-  >([]);
+  const [nweets, setNweets] = useState<INweets[]>([]);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -52,11 +58,7 @@ export const Home: React.FC<IHomeProps> = ({ user }) => {
         />
         <input type="submit" value="Nweet" onChange={onChange} />
       </form>
-      <div>
-        {nweets.map((nweet) => (
-          <div key={nweet.id}>{nweet.text}</div>
-        ))}
-      </div>
+      <Nweets nweets={nweets} user={user} />
     </div>
   );
 };
