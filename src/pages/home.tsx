@@ -1,7 +1,7 @@
 // import { dbService } from "fb";
 import firebase from "firebase";
 import { dbService } from "fb";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Nweets } from "components/nweets";
 
 interface IHomeProps {
@@ -18,14 +18,18 @@ export interface INweet {
 export const Home: React.FC<IHomeProps> = ({ user }) => {
   const [nweet, setNweet] = useState("");
   const [nweets, setNweets] = useState<INweet[]>([]);
+  const [attachment, setAttachment] = useState<string | null>("");
+  const inputFileRef = useRef<HTMLInputElement>(null);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    await dbService.collection("nweets").add({
-      text: nweet,
-      createdAt: Date.now(),
-      creatorId: user!.uid,
-    });
+    if (nweet !== "") {
+      await dbService.collection("nweets").add({
+        text: nweet,
+        createdAt: Date.now(),
+        creatorId: user!.uid,
+      });
+    }
     setNweet("");
   };
 
@@ -42,8 +46,17 @@ export const Home: React.FC<IHomeProps> = ({ user }) => {
     } = event;
     const changeFile = files![0];
     const reader = new FileReader();
-    reader.onload = (event: ProgressEvent<FileReader>) => console.log(event);
+    reader.onloadend = () => {
+      setAttachment(reader.result as string);
+    };
     reader.readAsDataURL(changeFile);
+  };
+
+  const onClearAttachment = () => {
+    setAttachment(null);
+    if (inputFileRef.current) {
+      inputFileRef.current.value = "";
+    }
   };
 
   useEffect(() => {
@@ -66,8 +79,19 @@ export const Home: React.FC<IHomeProps> = ({ user }) => {
           maxLength={120}
           onChange={onChange}
         />
-        <input type="file" accept="image/*" onChange={onFileChange} />
+        <input
+          ref={inputFileRef}
+          type="file"
+          accept="image/*"
+          onChange={onFileChange}
+        />
         <input type="submit" value="Nweet" onChange={onChange} />
+        {attachment && (
+          <div>
+            <img src={attachment} alt={attachment} width="50px" height="50px" />
+            <button onClick={onClearAttachment}>Clear</button>
+          </div>
+        )}
       </form>
       <div>
         {nweets.map((nweet) => (
