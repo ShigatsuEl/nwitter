@@ -9,22 +9,27 @@ import { Profile } from "../pages/profile";
 interface IRouterProps {
   isLoggedIn: boolean;
   user: firebase.User | null;
+  refreshUser: () => void;
 }
 
-export const Router: React.FC<IRouterProps> = ({ isLoggedIn, user }) => {
+export const Router: React.FC<IRouterProps> = ({
+  isLoggedIn,
+  user,
+  refreshUser,
+}) => {
   return (
     <BrowserRouter>
       {isLoggedIn && <Navigation user={user} />}
       <Switch>
         {isLoggedIn ? (
-          <React.Fragment>
+          <Switch>
             <Route exact path="/">
               <Home user={user} />
             </Route>
             <Route exact path="/profile">
-              <Profile user={user} />
+              <Profile user={user} refreshUser={refreshUser} />
             </Route>
-          </React.Fragment>
+          </Switch>
         ) : (
           <Route exact path="/">
             <Auth />

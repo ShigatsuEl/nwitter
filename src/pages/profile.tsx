@@ -1,25 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { authService, dbService } from "fb";
+import { authService } from "fb";
 import firebase from "firebase/app";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 interface IProfileProps {
   user: firebase.User | null;
+  refreshUser: () => void;
 }
 
-export const Profile: React.FC<IProfileProps> = ({ user }) => {
+export const Profile: React.FC<IProfileProps> = ({ user, refreshUser }) => {
   const [displayName, setDisplayName] = useState(user?.displayName!);
 
   const onLogOutClick = () => authService.signOut();
-
-  const getMyNweets = async () => {
-    const nweets = await dbService
-      .collection("nweets")
-      .where("creatorId", "==", user?.uid)
-      .orderBy("createdAt")
-      .get();
-    console.log(nweets.docs.map((doc) => doc.data()));
-  };
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const {
@@ -30,16 +22,13 @@ export const Profile: React.FC<IProfileProps> = ({ user }) => {
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (user?.displayName !== displayName) {
-      await user?.updateProfile({
+    if (user && user.displayName !== displayName) {
+      await user.updateProfile({
         displayName,
       });
+      refreshUser();
     }
   };
-
-  useEffect(() => {
-    getMyNweets();
-  }, []);
 
   return (
     <React.Fragment>
