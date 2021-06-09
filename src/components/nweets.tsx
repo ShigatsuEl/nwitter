@@ -1,3 +1,5 @@
+import { faPencilAlt, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { dbService, storeService } from "fb";
 import firebase from "firebase";
 import React, { useState } from "react";
@@ -40,22 +42,26 @@ export const Nweets: React.FC<INweetsProps> = ({ nweet, user }) => {
   };
 
   return (
-    <div>
+    <div className="nweet">
       {isEditing ? (
         <React.Fragment>
           {user?.uid === nweet.creatorId && (
             <React.Fragment>
-              <form onSubmit={onSubmit}>
+              <form onSubmit={onSubmit} className="container nweetEdit">
                 <input
                   type="text"
                   value={newNweetText}
                   placeholder="Edit your Nweet"
                   required
+                  autoFocus
                   onChange={onChange}
+                  className="formInput"
                 />
-                <button>Update</button>
+                <button className="formBtn">Update</button>
               </form>
-              <button onClick={toggleEditing}>Cancel</button>
+              <button onClick={toggleEditing} className="formBtn cancelBtn">
+                Cancel
+              </button>
             </React.Fragment>
           )}
         </React.Fragment>
@@ -63,14 +69,16 @@ export const Nweets: React.FC<INweetsProps> = ({ nweet, user }) => {
         <React.Fragment>
           <h4>{nweet.text}</h4>
           {user?.uid === nweet.creatorId && (
-            <React.Fragment>
-              <button onClick={toggleEditing}>Edit</button>
-              <button onClick={onDeleteClick}>Delete</button>
-            </React.Fragment>
+            <div className="nweet__actions">
+              <span onClick={toggleEditing}>
+                <FontAwesomeIcon icon={faPencilAlt} />
+              </span>
+              <span onClick={onDeleteClick}>
+                <FontAwesomeIcon icon={faTrash} />
+              </span>
+            </div>
           )}
-          {nweet.fileUrl && (
-            <img src={nweet.fileUrl} alt={nweet.id} width="50" height="50" />
-          )}
+          {nweet.fileUrl && <img src={nweet.fileUrl} alt={nweet.id} />}
         </React.Fragment>
       )}
     </div>

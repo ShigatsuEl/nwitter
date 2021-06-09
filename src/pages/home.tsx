@@ -30,9 +30,9 @@ export const Home: React.FC<IHomeProps> = ({ user }) => {
   }, []);
 
   return (
-    <div>
+    <div className="container">
       <NweetFactory user={user} />
-      <div>
+      <div style={{ marginTop: 30 }}>
         {nweets.map((nweet) => (
           <Nweets key={nweet.id} nweet={nweet} user={user} />
         ))}

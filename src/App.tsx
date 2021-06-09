@@ -2,6 +2,7 @@ import firebase from "firebase";
 import React, { useEffect, useState } from "react";
 import { Router } from "./routers/router";
 import { authService } from "./fb";
+import "./styles.css";
 
 interface IFirebase extends firebase.User {
   reloadUser?: () => void;
@@ -41,7 +42,6 @@ function App() {
       ) : (
         "Initailizing..."
       )}
-      <footer>&copy; Nwitter {new Date().getFullYear()}</footer>
     </div>
   );
 }

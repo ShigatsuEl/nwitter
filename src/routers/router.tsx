@@ -22,14 +22,25 @@ export const Router: React.FC<IRouterProps> = ({
       {isLoggedIn && <Navigation user={user} />}
       <Switch>
         {isLoggedIn ? (
-          <Switch>
-            <Route exact path="/">
-              <Home user={user} />
-            </Route>
-            <Route exact path="/profile">
-              <Profile user={user} refreshUser={refreshUser} />
-            </Route>
-          </Switch>
+          <>
+            <div
+              style={{
+                maxWidth: 890,
+                width: "100%",
+                margin: "0 auto",
+                marginTop: 80,
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Route exact path="/">
+                <Home user={user} />
+              </Route>
+              <Route exact path="/profile">
+                <Profile user={user} refreshUser={refreshUser} />
+              </Route>
+            </div>
+          </>
         ) : (
           <Route exact path="/">
             <Auth />

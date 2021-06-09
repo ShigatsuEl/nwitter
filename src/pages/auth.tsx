@@ -1,13 +1,16 @@
+import {
+  faGithub,
+  faGoogle,
+  faTwitter,
+} from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AuthForm } from "components/auth-form";
 import { authService, firebaseInstance } from "fb";
 import React, { useState } from "react";
 
 export const Auth = () => {
   const [isCreateAccount, setIsCreateAccount] = useState(true);
-
-  const toggleMethod = () => {
-    setIsCreateAccount((current) => !current);
-  };
+  const [error, setError] = useState("");
 
   const onSocialClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     try {
@@ -20,30 +23,32 @@ export const Auth = () => {
       } else if (target.name === "github") {
         provider = new firebaseInstance.auth.GithubAuthProvider();
       }
-      const data = await authService.signInWithPopup(provider!);
-      console.log(data);
+      await authService.signInWithPopup(provider!);
     } catch (error) {
-      console.log(error);
+      setError(error.message);
     }
   };
 
   return (
-    <div>
-      <AuthForm isCreateAccount={isCreateAccount} />
-      <h6
-        onClick={toggleMethod}
-        style={{ fontSize: "1rem", margin: 0, cursor: "pointer" }}
-      >
-        {isCreateAccount
-          ? "Already have an account? Log In"
-          : "Don’t have an account? Create account"}
-      </h6>
-      <div>
-        <button name="google" onClick={onSocialClick}>
-          Continue with Google
+    <div className="authContainer">
+      <FontAwesomeIcon
+        icon={faTwitter}
+        color={"#04AAFF"}
+        size="3x"
+        style={{ marginBottom: 30 }}
+      />
+      <AuthForm
+        isCreateAccount={isCreateAccount}
+        setIsCreateAccount={setIsCreateAccount}
+        error={error}
+        setError={setError}
+      />
+      <div className="authBtns">
+        <button name="google" onClick={onSocialClick} className="authBtn">
+          Continue with Google <FontAwesomeIcon icon={faGoogle} />
         </button>
-        <button name="github" onClick={onSocialClick}>
-          Continue with Github
+        <button name="github" onClick={onSocialClick} className="authBtn">
+          Continue with Github <FontAwesomeIcon icon={faGithub} />
         </button>
       </div>
     </div>
