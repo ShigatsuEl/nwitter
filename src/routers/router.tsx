@@ -18,7 +18,7 @@ export const Router: React.FC<IRouterProps> = ({
   refreshUser,
 }) => {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
       {isLoggedIn && <Navigation user={user} />}
       <Switch>
         {isLoggedIn ? (
