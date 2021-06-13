@@ -10,29 +10,29 @@ interface INweetFactoryProps {
 
 export const NweetFactory: React.FC<INweetFactoryProps> = ({ user }) => {
   const [nweet, setNweet] = useState("");
-  const [file, setFile] = useState<string | null>(null);
+  const [file, setFile] = useState<string>("");
   const inputFileRef = useRef<HTMLInputElement>(null);
 
   const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    let fileUrl = null;
-    if (file !== null) {
-      const fileRef = storeService.ref().child(`${user?.uid}/${uuidv4()}`);
-      const response = await fileRef.putString(file, "data_url");
+    if (nweet === "") {
+      return;
+    }
+    let fileUrl = "";
+    if (file !== "") {
+      const theFile = storeService.ref().child(`${user?.uid}/${uuidv4()}`);
+      const response = await theFile.putString(file, "data_url");
       fileUrl = await response.ref.getDownloadURL();
     }
     const nweetObj = {
       text: nweet,
       createdAt: Date.now(),
-      creatorId: user!.uid,
+      creatorId: user?.uid,
       fileUrl,
     };
-
-    if (nweetObj.text !== "" || nweetObj.fileUrl !== null) {
-      await dbService.collection("nweets").add(nweetObj);
-      setNweet("");
-      setFile("");
-    }
+    await dbService.collection("nweets").add(nweetObj);
+    setNweet("");
+    setFile("");
   };
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,17 +54,17 @@ export const NweetFactory: React.FC<INweetFactoryProps> = ({ user }) => {
     }
     const reader = new FileReader();
     reader.onloadend = () => {
-      setFile(reader.result as string | null);
+      setFile(reader.result as string);
     };
     if (changeFile) {
       reader.readAsDataURL(changeFile);
     } else {
-      setFile(null);
+      setFile("");
     }
   };
 
   const onClearFile = () => {
-    setFile(null);
+    setFile("");
     if (inputFileRef.current) {
       inputFileRef.current.value = "";
     }

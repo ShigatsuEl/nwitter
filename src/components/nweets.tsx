@@ -18,7 +18,7 @@ export const Nweets: React.FC<INweetsProps> = ({ nweet, user }) => {
     const ok = window.confirm("Are you sure want to delete this nweet?");
     if (ok) {
       await dbService.doc(`nweets/${nweet.id}`).delete();
-      await storeService.refFromURL(nweet.fileUrl!).delete();
+      if (nweet.fileUrl) await storeService.refFromURL(nweet.fileUrl).delete();
     }
   };
 
